@@ -11,15 +11,15 @@ def get_min_max(data, kind="min"):
     for num in data:
         #split the n
         info = num.split(',')
-        if kind == "max":
+        if kind == "min":
             if info[1]+','+ info[2] in new_dict:
-                if int(info[9]) > new_dict[info[1]+','+info[2]]:
+                if int(info[9]) < new_dict[info[1]+','+info[2]]:
                     new_dict[info[1]+','+ info[2]] = int(info[9])
             else:
                 new_dict[info[1]+','+ info[2]] = int(info[9])
-        elif kind == "min":
+        else:
             if info[1]+','+ info[2] in new_dict:
-                if int(info[9]) < new_dict[info[1]+','+info[2]]:
+                if int(info[9]) > new_dict[info[1]+','+info[2]]:
                     new_dict[info[1]+','+ info[2]] = int(info[9])
             else:
                 new_dict[info[1]+','+ info[2]] = int(info[9])
@@ -72,18 +72,19 @@ def compute_ridership(min_dict, max_dict, turnstiles = None):
     Returns the ridership (the difference between the minimum and maximum values)
     across all turnstiles specified"""
     total = 0
-    none_var = None
-    if turnstiles == none_var:
-        for i in max_dict:
-            total += max_dict[i]
-        for j in max_dict:
-            total += min_dict[j]
+    #none_var = None
+    #print("This is min Dict")
+    #print(min_dict)
+    #print("This is max Dict")
+    #print(max_dict)
+    if turnstiles == None:
+        total = sum(min_dict.values()) + sum(max_dict.values())
     else:
-        for i in turnstiles:
-            if i in max_dict:
-                total += max_dict[i]
-            if i in min_dict:
-                total -= min_dict[i]
+        for turnstile_name in turnstiles:
+            #if turnstile_name in max_dict:
+            total += max_dict[turnstile_name]
+            #if turnstile_name in min_dict:
+            total -= min_dict[turnstile_name]
 
     return total
 
@@ -109,7 +110,7 @@ def main():
     #All teh turnstiles from teh data:
     print(f'All turnstiles: {get_turnstiles(station_dict)}')
     #Print only for Hunter & Roservelt Isalnd stastion:
-    ridership = compute_ridership(min_dict,max_dict, turnstiles=["RO51,02-00-00"])
+    ridership = compute_ridership(min_dict,max_dict, turnstiles=["R051,02-00-00"])
     print(f'Ridership for turnstile, RO51,02-00-00: {ridership}.')
     print(get_turnstiles(station_dict, stations = ['68ST-HUNTER CO','ROOSEVELT ISLND']))
     hunter_turns = get_turnstiles(station_dict, stations = ['68ST-HUNTER CO'])
